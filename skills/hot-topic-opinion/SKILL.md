@@ -601,124 +601,256 @@ model: opus
 
 #### 5.2 Word 文档排版规格
 
-| 元素 | 字体 | 字号 | 加粗 | 颜色 | 对齐 | 段前/后间距 |
-|------|------|------|------|------|------|------------|
-| 文章标题 | 微软雅黑 | 22pt | ✅ | #1A1A1A | 居中 | 段前24pt 段后12pt |
-| 导语/摘要 | 微软雅黑 | 11pt | ❌ 斜体 | #666666 | 居中 | 段后18pt |
-| 一级小标题 (##) | 微软雅黑 | 16pt | ✅ | #1A1A1A | 左对齐 | 段前20pt 段后8pt |
-| 正文 | 微软雅黑 | 11pt | ❌ | #333333 | 两端对齐 | 段后6pt 行距18pt |
-| 加粗正文 (核心判断句) | 微软雅黑 | 11pt | ✅ | #1A1A1A | 两端对齐 | 段后6pt 行距18pt |
-| 金句/引用 (>) | 微软雅黑 | 12pt | ✅ | #CC6600 | 左对齐 | 段前/后12pt 左缩进36pt |
-| 参考来源 | 微软雅黑 | 9pt | ❌ | #888888 | 左对齐 | 段后2pt |
+> 参照中文专业排版规范与头部公众号/杂志排版实践，打造"打开就像一篇发表文章"的视觉效果。
+
+| 元素 | 字体 | 字号 | 加粗 | 颜色 | 对齐 | 间距与缩进 |
+|------|------|------|------|------|------|-----------|
+| 文章标题 | 微软雅黑 | 18pt | ✅ | #1A1A1A | 居中 | 段前24pt 段后6pt；下方浅灰装饰线 |
+| 元数据行 | 微软雅黑 | 9pt | ❌ | #999999 | 居中 | 段后18pt；显示"全文约X字 | 阅读约需X分钟" |
+| 导语/摘要 | 微软雅黑 | 11pt | ❌ | #666666 | 居中 | 段后24pt |
+| 一级小标题 (##) | 微软雅黑 | 14pt | ✅ | #1A1A1A | 左对齐 | 段前32pt 段后15pt；**带编号**（一、二、三…）；上方浅灰细线分隔 |
+| 导语段落 (lead) | 微软雅黑 | 11pt | ❌ | #333333 | 两端对齐 | 段后8pt 行距20pt；**不缩进**，H2后第一段 |
+| 正文段落 (body) | 微软雅黑 | 11pt | 句首加粗 | #333333/#1A1A1A | 两端对齐 | 段后4pt 行距20pt；**首行缩进22pt**；`**...**`标记加粗 |
+| 金句/引用 (>) | 微软雅黑 | 12pt | ✅ | #CC6600 | **居中** | 段前/后24pt 左右缩进36pt；**「 」装饰引号**包裹 |
+| 核心洞察框 | 微软雅黑 | 11pt | 标题加粗 | #333333 | 两端对齐 | 段前/后16pt；**#F5F5F5浅灰底色 + 左侧橙色竖线** |
+| 节间分隔线 | — | 10pt | ❌ | #CCCCCC | 居中 | 段前/后20pt；细线 `—— ◆ ——` |
+| 文末标记 | 微软雅黑 | 10pt | ❌ | #CCCCCC | 居中 | 段前24pt；■ 实心方块 |
+| 参考来源 | 微软雅黑 | 9pt | ❌ | #888888 | 左对齐 | 段后2pt；浅灰小字 |
 | 表格 | 微软雅黑 | 9pt | 表头加粗 | #333333 | — | 表头深色底白字 |
+
+**字号体系**（标题18→小标题14→正文11→注释9，三级递进）：
+```
+18pt (标题)  →  14pt (一级小标题)  →  11pt (正文)  →  9pt (注释/参考)
+```
+
+**色彩体系**（全文 ≤ 4 色）：
+```
+#1A1A1A (标题黑)  |  #333333 (正文深灰)  |  #CC6600 (强调橙)  |  #F5F5F5 (底色浅灰)
+```
 
 #### 5.3 导出实现：PowerShell + Word COM 脚本
 
 **在 Windows 环境下，使用 PowerShell 调用 Word COM 对象来生成 .docx 文件。**
 
-以下是标准的文档生成脚本模板。每次撰写完文章后，将文章内容填入脚本的对应段落，执行生成。
+##### 设计理念（v3）
+
+参照中文专业排版规范（财新/虎嗅/36氪/头部公众号），构建"打开就像一篇发表文章"的视觉效果：
+- **字号三级递进**：标题18pt → 小标题14pt → 正文11pt → 注释9pt
+- **1.75倍黄金行距**：正文行距20pt（11pt × 1.75），阅读呼吸感
+- **段落内混排加粗**：`**...**` 标记加粗文字，单一段落内句首加粗
+- **首行缩进2字符**：22pt（符合 GB/T 9704 中文排版标准）
+- **编号式小标题**：H2 带"一、二、三…"编号 + 上方浅灰线
+- **居中金句引用**：「 」装饰引号 + 橙色文字 + 上下留白
+- **核心洞察框**：浅灰底色 + 左侧橙色竖线
+- **文末标记**：■ 实心方块收束全文
+
+##### 完整脚本模板
 
 ```powershell
-# ===== AI编程观点文章 Word 文档生成脚本 =====
-# 使用方式：修改下方 $savePath 和文章内容，然后在 PowerShell 中执行
+# ===== 热门话题深度分析文章 Word 文档生成脚本 v3 =====
+# 参照中文专业排版规范：字号18→14→11→9三级递进，行距1.75x，2字符首行缩进
+# 注意：含 $ 的文本用单引号包裹，中文引号无需转义
 
 $savePath = "<这里填完整的保存路径>"
 
 # 初始化 Word
 $word = New-Object -ComObject Word.Application
 $word.Visible = $false
+$word.ScreenUpdating = $false
 $doc = $word.Documents.Add()
 $doc.PageSetup.TopMargin = 72
 $doc.PageSetup.BottomMargin = 72
-$doc.PageSetup.LeftMargin = 72
-$doc.PageSetup.RightMargin = 72
+$doc.PageSetup.LeftMargin = 100
+$doc.PageSetup.RightMargin = 100
 
-# ---- 辅助函数 ----
+# ========== 辅助函数 ==========
+
 function Add-Title($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 22; $r.Font.Bold = $true
-    $r.Font.Color = 0x1A1A1A
-    $r.ParagraphFormat.Alignment = 1  # 居中
-    $r.ParagraphFormat.SpaceBefore = 24; $r.ParagraphFormat.SpaceAfter = 12
-    $r.InsertParagraphAfter()
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 18; $sel.Font.Bold = $true
+    $sel.Font.Color = 0x1A1A1A
+    $sel.ParagraphFormat.Alignment = 1  # 居中
+    $sel.ParagraphFormat.SpaceBefore = 24; $sel.ParagraphFormat.SpaceAfter = 6
+    $sel.TypeText($text)
+    $sel.TypeParagraph()
+    # 标题下方浅灰装饰线
+    $sel.Font.Size = 10; $sel.Font.Bold = $false; $sel.Font.Color = 0xD0D0D0
+    $sel.ParagraphFormat.Alignment = 1; $sel.ParagraphFormat.SpaceBefore = 0; $sel.ParagraphFormat.SpaceAfter = 8
+    $sel.TypeText("━━━━━━━━━━━━━━━━━━━━━━")
+    $sel.TypeParagraph()
+}
+
+function Add-Meta($text) {
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 9
+    $sel.Font.Color = 0x999999; $sel.Font.Bold = $false
+    $sel.ParagraphFormat.Alignment = 1  # 居中
+    $sel.ParagraphFormat.SpaceBefore = 0; $sel.ParagraphFormat.SpaceAfter = 18
+    $sel.TypeText($text)
+    $sel.TypeParagraph()
 }
 
 function Add-Subtitle($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 11; $r.Font.Italic = $true
-    $r.Font.Color = 0x666666
-    $r.ParagraphFormat.Alignment = 1
-    $r.ParagraphFormat.SpaceAfter = 18
-    $r.InsertParagraphAfter()
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 11
+    $sel.Font.Color = 0x666666; $sel.Font.Bold = $false
+    $sel.ParagraphFormat.Alignment = 1  # 居中
+    $sel.ParagraphFormat.SpaceBefore = 0; $sel.ParagraphFormat.SpaceAfter = 24
+    $sel.TypeText($text)
+    $sel.TypeParagraph()
 }
 
 function Add-H2($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 16; $r.Font.Bold = $true
-    $r.Font.Color = 0x1A1A1A
-    $r.ParagraphFormat.SpaceBefore = 20; $r.ParagraphFormat.SpaceAfter = 8
-    $r.InsertParagraphAfter()
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    # 小标题上方浅灰细线
+    $sel.Font.Size = 1; $sel.Font.Bold = $false; $sel.Font.Color = 0xE0E0E0
+    $sel.ParagraphFormat.Alignment = 0; $sel.ParagraphFormat.SpaceBefore = 14; $sel.ParagraphFormat.SpaceAfter = 0
+    $sel.TypeText(" ")
+    $sel.TypeParagraph()
+    $linePara = $doc.Paragraphs.Item($doc.Paragraphs.Count - 1)
+    $linePara.Range.Borders.Item(1).LineStyle = 1    # wdBorderBottom
+    $linePara.Range.Borders.Item(1).LineWidth = 2    # wdLineWidth025pt
+    $linePara.Range.Borders.Item(1).Color = 0xE0E0E0
+    # 小标题文字
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 14; $sel.Font.Bold = $true
+    $sel.Font.Color = 0x1A1A1A
+    $sel.ParagraphFormat.Alignment = 0  # 左对齐
+    $sel.ParagraphFormat.SpaceBefore = 18; $sel.ParagraphFormat.SpaceAfter = 15
+    $sel.TypeText($text)
+    $sel.TypeParagraph()
 }
 
-function Add-Body($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 11
-    $r.Font.Color = 0x333333
-    $r.ParagraphFormat.SpaceAfter = 6
-    $r.ParagraphFormat.LineSpacingRule = 1; $r.ParagraphFormat.LineSpacing = 18
-    $r.ParagraphFormat.Alignment = 3  # 两端对齐
-    $r.InsertParagraphAfter()
-}
-
-function Add-Bold($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 11; $r.Font.Bold = $true
-    $r.Font.Color = 0x1A1A1A
-    $r.ParagraphFormat.SpaceAfter = 6
-    $r.ParagraphFormat.LineSpacingRule = 1; $r.ParagraphFormat.LineSpacing = 18
-    $r.ParagraphFormat.Alignment = 3
-    $r.InsertParagraphAfter()
+function Add-Para {
+    param([string]$text, [string]$style = "body")
+    # styles: "body" (缩进), "lead" (不缩进), "end" (不缩进+段前距)
+    
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    
+    # 按 **...** 标记拆分，段落内混排加粗
+    $parts = [regex]::Split($text, '(\*\*.*?\*\*)')
+    foreach ($part in $parts) {
+        if ($part -eq $null -or $part -eq '') { continue }
+        if ($part -match '^\*\*(.*?)\*\*$') {
+            $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 11
+            $sel.Font.Bold = $true; $sel.Font.Color = 0x1A1A1A
+            $sel.TypeText($Matches[1])
+        } else {
+            $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 11
+            $sel.Font.Bold = $false; $sel.Font.Color = 0x333333
+            $sel.TypeText($part)
+        }
+    }
+    $sel.TypeParagraph()
+    
+    $targetPara = $doc.Paragraphs.Item($doc.Paragraphs.Count - 1)
+    $pf = $targetPara.Range.ParagraphFormat
+    $pf.Alignment = 3; $pf.LineSpacingRule = 1; $pf.LineSpacing = 20  # 1.75x行距
+    
+    if ($style -eq "body") {
+        $pf.FirstLineIndent = 22; $pf.SpaceAfter = 4; $pf.SpaceBefore = 0
+    } elseif ($style -eq "lead") {
+        $pf.FirstLineIndent = 0; $pf.SpaceAfter = 8; $pf.SpaceBefore = 0
+    } elseif ($style -eq "end") {
+        $pf.FirstLineIndent = 0; $pf.SpaceAfter = 4; $pf.SpaceBefore = 12
+    }
+    $sel.EndKey(6)
 }
 
 function Add-Quote($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 12; $r.Font.Bold = $true
-    $r.Font.Color = 0xCC6600
-    $r.ParagraphFormat.SpaceBefore = 12; $r.ParagraphFormat.SpaceAfter = 12
-    $r.ParagraphFormat.LeftIndent = 36
-    $r.ParagraphFormat.LineSpacingRule = 1; $r.ParagraphFormat.LineSpacing = 20
-    $r.InsertParagraphAfter()
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 12; $sel.Font.Bold = $true
+    $sel.Font.Color = 0xCC6600
+    $sel.ParagraphFormat.Alignment = 1  # 居中
+    $sel.ParagraphFormat.SpaceBefore = 24; $sel.ParagraphFormat.SpaceAfter = 24
+    $sel.ParagraphFormat.LeftIndent = 36; $sel.ParagraphFormat.RightIndent = 36
+    $sel.ParagraphFormat.FirstLineIndent = 0
+    $sel.ParagraphFormat.LineSpacingRule = 1; $sel.ParagraphFormat.LineSpacing = 22
+    # 「 」装饰引号包裹
+    $sel.TypeText("「" + $text + "」")
+    $sel.TypeParagraph()
+}
+
+function Add-InsightBox($text) {
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 11; $sel.Font.Bold = $false
+    $sel.Font.Color = 0x333333
+    $sel.ParagraphFormat.Alignment = 3  # 两端对齐
+    $sel.ParagraphFormat.SpaceBefore = 16; $sel.ParagraphFormat.SpaceAfter = 16
+    $sel.ParagraphFormat.LeftIndent = 18; $sel.ParagraphFormat.RightIndent = 18
+    $sel.ParagraphFormat.FirstLineIndent = 0
+    $sel.ParagraphFormat.LineSpacingRule = 1; $sel.ParagraphFormat.LineSpacing = 19
+    $sel.TypeText($text)
+    $sel.TypeParagraph()
+    # 浅灰底色 + 左侧橙色竖线
+    $boxPara = $doc.Paragraphs.Item($doc.Paragraphs.Count - 1)
+    $boxPara.Range.Shading.BackgroundPatternColor = 0xF5F5F5
+    $boxPara.Range.Borders.Item(2).LineStyle = 1      # wdBorderLeft
+    $boxPara.Range.Borders.Item(2).LineWidth = 8      # wdLineWidth150pt
+    $boxPara.Range.Borders.Item(2).Color = 0xCC6600
+}
+
+function Add-Divider {
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 10
+    $sel.Font.Color = 0xCCCCCC; $sel.Font.Bold = $false
+    $sel.ParagraphFormat.Alignment = 1  # 居中
+    $sel.ParagraphFormat.SpaceBefore = 20; $sel.ParagraphFormat.SpaceAfter = 20
+    $sel.ParagraphFormat.FirstLineIndent = 0
+    $sel.TypeText("—— ◆ ——")
+    $sel.TypeParagraph()
+}
+
+function Add-EndMarker {
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 10
+    $sel.Font.Color = 0xCCCCCC; $sel.Font.Bold = $false
+    $sel.ParagraphFormat.Alignment = 1  # 居中
+    $sel.ParagraphFormat.SpaceBefore = 24; $sel.ParagraphFormat.SpaceAfter = 12
+    $sel.ParagraphFormat.FirstLineIndent = 0
+    $sel.TypeText("■")
+    $sel.TypeParagraph()
 }
 
 function Add-Ref($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = "- " + $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 9
-    $r.Font.Color = 0x888888
-    $r.ParagraphFormat.SpaceAfter = 2
-    $r.InsertParagraphAfter()
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 9
+    $sel.Font.Color = 0x888888; $sel.Font.Bold = $false
+    $sel.ParagraphFormat.SpaceAfter = 2
+    $sel.ParagraphFormat.FirstLineIndent = 0; $sel.ParagraphFormat.LeftIndent = 0
+    $sel.TypeText("- " + $text)
+    $sel.TypeParagraph()
+}
+
+function Add-Footer($text) {
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 9
+    $sel.Font.Color = 0xAAAAAA; $sel.Font.Bold = $false
+    $sel.ParagraphFormat.Alignment = 2  # 右对齐
+    $sel.ParagraphFormat.SpaceBefore = 24
+    $sel.TypeText($text)
+    $sel.TypeParagraph()
 }
 
 function Add-Table($headers, $rows) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $numRows = $rows.Count + 1
-    $numCols = $headers.Count
-    $tbl = $doc.Tables.Add($r, $numRows, $numCols)
-    # 表头
-    for ($c = 0; $c -lt $numCols; $c++) {
-        $tbl.Cell(1, $c + 1).Range.Text = $headers[$c]
-    }
-    # 数据行
+    $sel = $word.Selection
+    $sel.EndKey(6)
+    $numRows = $rows.Count + 1; $numCols = $headers.Count
+    $tbl = $doc.Tables.Add($sel.Range, $numRows, $numCols)
+    for ($c = 0; $c -lt $numCols; $c++) { $tbl.Cell(1, $c + 1).Range.Text = $headers[$c] }
     for ($rIdx = 0; $rIdx -lt $rows.Count; $rIdx++) {
-        for ($c = 0; $c -lt $numCols; $c++) {
-            $tbl.Cell($rIdx + 2, $c + 1).Range.Text = $rows[$rIdx][$c]
-        }
+        for ($c = 0; $c -lt $numCols; $c++) { $tbl.Cell($rIdx + 2, $c + 1).Range.Text = $rows[$rIdx][$c] }
     }
     $tbl.Range.Font.Name = "微软雅黑"; $tbl.Range.Font.Size = 9
     $tbl.Rows.Item(1).Range.Font.Bold = $true
@@ -729,50 +861,44 @@ function Add-Table($headers, $rows) {
     $endR.InsertParagraphAfter()
 }
 
-function Add-Separator() {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = "`r`n"; $r.InsertParagraphAfter()
-}
 
-function Add-Footer($text) {
-    $r = $doc.Range($doc.Content.End - 1, $doc.Content.End - 1)
-    $r.Text = $text + "`r`n"
-    $r.Font.Name = "微软雅黑"; $r.Font.Size = 9; $r.Font.Italic = $true
-    $r.Font.Color = 0xAAAAAA
-    $r.ParagraphFormat.Alignment = 2  # 右对齐
-    $r.InsertParagraphAfter()
-}
-
-# ===== 文章内容（在此填入具体内容）=====
+# ========== 文章内容（按顺序填入）==========
 
 Add-Title "<文章标题>"
-Add-Subtitle "<导语/副标题，如无则删除此行>"
+Add-Meta "全文约<X>字 | 阅读约需<X>分钟"
+Add-Subtitle "<导语摘要，如无则删除此行>"
 
-# --- 正文段落 ---
-# 使用 Add-Body 添加普通段落
-# 使用 Add-Bold 添加加粗的核心判断句
-# 使用 Add-H2 添加一级小标题
-# 使用 Add-Quote 添加金句/引用
-# 使用 Add-Table 添加对比表格（参数：@("列1","列2",...) , @( @("行1列1","行1列2",...), @("行2列1","行2列2",...) )）
-# 使用 Add-Separator 添加段间分隔
+# --- 正文 ---
+# Add-Para "**核心判断句。**后续正文内容。"                  → body（首行缩进22pt，句首加粗）
+# Add-Para "导语过渡段落，引出下文讨论。" -style "lead"       → lead（不缩进，H2后第一段）
+# Add-H2 "一、<带编号的小标题>"                              → H2（14pt，上方细线+编号）
+# Add-Quote "<金句/核心洞察>"                               → 居中引用（「 」包裹+橙色+留白）
+# Add-InsightBox "<核心洞察或关键数据>"                       → 洞察框（#F5F5F5浅灰底+左侧橙色竖线）
+# Add-Divider                                               → 节间分隔（—— ◆ ——）
+# Add-Table @("列1","列2") @(@("a","b"),@("c","d"))         → 数据表格
+# Add-Para "结尾收束段落。" -style "end"                      → end（不缩进，段前距加大）
+# Add-EndMarker                                             → 文末标记（■）
 
 # --- 参考来源 ---
+Add-Divider
 Add-H2 "参考来源"
 Add-Ref "<来源1>"
 Add-Ref "<来源2>"
 
 # --- 文章元信息 ---
-Add-Separator
+Add-Divider
 Add-Footer "（本文采用：<体例名> | 平台：<平台名>）"
+Add-Footer "如需知乎/头条/虎嗅/微博/小红书/B站版本请告知"
 
-# ===== 保存文档 =====
-$doc.SaveAs([ref]$savePath, [ref]16)  # 16 = wdFormatDocumentDefault
+
+# ========== 保存 ==========
+$doc.SaveAs([ref]$savePath, [ref]16)
 $doc.Close()
 $word.Quit()
 [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word) | Out-Null
 
 Write-Output "文档已保存到: $savePath"
-Write-Output "文件大小: $((Get-Item $savePath).Length / 1KB) KB"
+Write-Output ('文件大小: ' + [math]::Round((Get-Item $savePath).Length / 1KB, 1) + ' KB')
 ```
 
 #### 5.4 脚本使用流程
@@ -780,18 +906,28 @@ Write-Output "文件大小: $((Get-Item $savePath).Length / 1KB) KB"
 每次完成文章撰写后，按以下步骤操作：
 
 1. **确定保存路径**：按 5.1 的规则确定 `$savePath`
-2. **将文章内容填入脚本**：
+2. **将文章内容填入脚本**（按文章实际顺序排列）：
    - 文章标题 → `Add-Title`
+   - 元数据行 → `Add-Meta "全文约X字 | 阅读约需X分钟"`
    - 导语摘要 → `Add-Subtitle`（如无则删除该行）
-   - 每个一级小标题(##) → `Add-H2`
-   - 每个普通段落 → `Add-Body`
-   - 每个加粗核心判断句 → `Add-Bold`
-   - 每个金句/引用(>) → `Add-Quote`
-   - 有对比数据需要表格 → `Add-Table`
-   - 每条参考来源 → `Add-Ref`
-   - 体例和平台信息 → `Add-Footer`
+   - 一级小标题(##) → `Add-H2 "一、<标题>"`（带编号 + 上方细线分隔）
+   - 段落 → `Add-Para "文字"`（**...** 标记加粗，-style "body"/"lead"/"end"）
+   - 金句引用(>) → `Add-Quote`（居中 + 「」装饰引号）
+   - 核心洞察框 → `Add-InsightBox`（浅灰底色 + 橙色左边框）
+   - 节间分隔 → `Add-Divider`（—— ◆ ——）
+   - 数据表格 → `Add-Table`
+   - 参考来源 → `Add-Ref`
+   - 文末 → `Add-EndMarker`（■ 收束）
+   - 体例/平台信息 → `Add-Footer`
 3. **执行脚本**：使用 `PowerShell` 工具执行填好的脚本
-4. **确认输出**：检查控制台输出的保存路径和文件大小，确认文件已生成
+4. **确认输出**：检查控制台输出的保存路径和文件大小（通常 15-40KB）
+
+> ⚠️ **v3 关键约定**：
+> - H2 必须带中文编号（一、二、三…或 01、02…）
+> - 金句引用用 `Add-Quote`（无需自己加「」），核心洞察用 `Add-InsightBox`
+> - 文末用 `Add-EndMarker` 收束，参考来源前加 `Add-Divider` 分隔
+> - 字号体系：标题18pt → H2 14pt → 正文11pt → 注释9pt
+> - 行距 20pt（≈1.75倍行距），正文首行缩进 22pt
 
 #### 5.5 注意事项
 
@@ -800,6 +936,45 @@ Write-Output "文件大小: $((Get-Item $savePath).Length / 1KB) KB"
 - **Word COM 依赖**：此方案依赖本机安装的 Microsoft Word。如果当前环境没有 Word，提示用户改用在线转换或手动保存。
 - **文件已存在时**：`SaveAs` 会覆盖同名文件，无需额外处理。
 - **大文档性能**：文章超过 5000 字时，COM 操作可能变慢（10-30秒），属于正常现象。
+
+#### 5.6 排版对比示例
+
+同一段文章内容，旧版 vs 新版脚本生成的 Word 效果：
+
+**文章原文（Markdown）**：
+```
+**互联网从诞生第一天起，就建立在"流量约等于人"这个隐性前提之上。** 广告商为曝光付费，前提是曝光给了活人。内容创作者追求阅读量，前提是读者是真实的。
+当57%的请求来自机器时，这个前提开始碎裂了。
+```
+
+**❌ 旧版脚本效果**（每个加粗句独立成段——"句子堆砌"）：
+```
+[段落1: 全文加粗] 互联网从诞生第一天起，就建立在"流量约等于人"这个隐性前提之上。
+[段落2: 正常] 广告商为曝光付费，前提是曝光给了活人。
+[段落3: 正常] 内容创作者追求阅读量，前提是读者是真实的。
+[段落4: 正常] 当57%的请求来自机器时，这个前提开始碎裂了。
+```
+→ 问题：4个独立段落，视觉上像碎片化的要点列表，失去文章段落感。
+
+**✅ 新版脚本效果**（单一段落内句首加粗——"自然排版"）：
+```
+[段1: 首行缩进22pt，句首"互联网从诞生第一天起……"加粗，后续正常]
+互联网从诞生第一天起，就建立在"流量约等于人"这个隐性前提之上。广告商为曝光付费，前提是曝光给了活人。内容创作者追求阅读量，前提是读者是真实的。当57%的请求来自机器时，这个前提开始碎裂了。
+```
+→ 效果：一个自然段落，首行缩进，句首加粗制造扫读锚点，后续文字正常流动。
+
+**关键差异总结**：
+
+| 维度 | 旧版 | 新版 |
+|------|------|------|
+| 段落组织 | 每个加粗句 = 独立段落 | 一个自然段落，`**...**` 标记加粗部分 |
+| 首行缩进 | 无 | 22pt（≈2个中文字） |
+| 段落呼吸感 | 差：碎片化句子堆砌 | 好：自然段落流动 |
+| 视觉层级 | 仅标题 vs 正文两级 | 标题 → H2+底线 → 引用块+左边框 → 正文缩进 → 分隔线 → 参考 |
+| 扫读锚点 | 散落的加粗句 | 段落内句首加粗 + 独立引用块 |
+| 符合中文排版规范 | ❌ | ✅ |
+
+> ⚠️ **每次生成 Word 文档时必须使用新版 v2 脚本。** 旧版 `Add-Body`/`Add-Bold` 函数已废弃。统一使用 `Add-Para` 函数，用 `**...**` 标记段落内需要加粗的文字。
 
 ---
 
@@ -1007,6 +1182,7 @@ Write-Output "文件大小: $((Get-Item $savePath).Length / 1KB) KB"
 ## 注意事项
 
 - **文档自动保存**：文章定稿后必须自动导出为 .docx 文件，保存路径按第五步规则确定。这是默认行为，不需要用户额外要求。
+- **⚠️ 必须使用 v3 脚本**（参照专业排版规范）。`Add-Para` 实现段落内 `**...**` 加粗混排+首行缩进22pt+1.75x行距；`Add-H2` 带编号+上方细线；`Add-Quote` 居中「」装饰；`Add-InsightBox` 浅灰底色框；`Add-EndMarker` ■ 文末标记。**严禁使用旧版 `Add-Body`/`Add-Bold`。**
 - 如果话题涉及敏感内容，聚焦于事实和逻辑分析，不做价值判断上的冒险。不同平台的敏感度不同——公众号和知乎最严格，B站和微博次之。
 - 引用信息时标注来源（至少标出媒体名称和发布时间）。知乎和虎嗅对此要求最高。
 - 如果信息不足以支撑深度分析，诚实告知并建议用户提供更多线索。
