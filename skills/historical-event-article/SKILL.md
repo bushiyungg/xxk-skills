@@ -1,6 +1,6 @@
 ---
 name: historical-event-article
-description: 基于用户提供的历史事件，生成深度历史解读文章。覆盖事件背景、关键人物、深层原因、历史影响与当代启示，帮助用户真正理解历史。支持 7 大平台定制风格（公众号/知乎/B站/头条/微博/小红书/百度）、11 种写作文体，并自动导出为格式化的 Word 文档。
+description: 基于用户提供的历史事件，生成深度历史解读文章。覆盖事件背景、关键人物、深层原因、历史影响与当代启示，帮助用户真正理解历史。支持 7 大平台定制风格（公众号/知乎/B站/头条/微博/小红书/百度）、11 种写作文体、可选旁白模式（切入人物内心）、可选图文模式（AI图片生成词），并自动导出为格式化的 Word 文档。
 model: opus
 ---
 
@@ -792,6 +792,270 @@ model: opus
 
 ---
 
+### 3.8 旁白模式（可选）——偷听历史人物脑子里的声音
+
+**旁白是什么？**
+
+旁白是一种特殊的叙事装置。在文章的关键转折处，你暂停主线的外部叙事，切入当事人的内心世界——让读者偷听到他在那个时刻的犹豫、恐惧、盘算和希望。
+
+它不是「作者在解释历史人物怎么想」。它是**你让读者钻进那个人物的脑子里**。
+
+旁白和正文的区别：
+- 正文写的是「他在做什么」
+- 旁白写的是「他做这件事的时候，心里在想什么」
+
+**何时主动建议用户启用旁白？**
+
+遇到以下信号时，在选题定调阶段（阶段一）就询问用户是否开启旁白模式：
+
+| 信号 | 示例 |
+|------|------|
+| 用户说「从XX的视角写」「XX的心理」「XX当时怎么想的」 | 「以秦始皇视角写焚书坑儒」 |
+| 事件的核心谜团是「他为什么要这样做？」 | 玄武门之变、王莽改制、司马光废新法 |
+| 事件有关键的抉择时刻（两难困境） | 鸿门宴项羽放刘邦、崇祯杀袁崇焕、诸葛亮北伐 |
+| 人物在巨大冲击后做了反常决定 | 司马迁受宫刑后选择活下来写《史记》 |
+| 用户指定了人物聚焦型、人物传记型体例 | 这两类体例天然需要内心活动 |
+
+**旁白的三种形态：**
+
+**形态一：关键时刻旁白（最常用，默认）**
+
+在事件的关键决策点插入 1-3 处旁白。每处 50-150 字，揭示人物在那个具体时刻的内心活动。
+
+适用场景：
+- 一个决定性的选择（「他选了出关」→ 旁白写他为什么选）
+- 一个意外的行为（「他突然流泪了」→ 旁白写他在想什么）
+- 一个沉默的时刻（「他久久没有回答」→ 旁白写沉默里翻腾着什么）
+
+**形态二：贯穿式旁白**
+
+全文从头到尾以旁白为主线。每一段正文（外部事件）后紧跟一段旁白（内心反应），形成交替节奏。
+
+适用场景：
+- 用户明确要求「以XX的视角写」「第一人称」
+- 全文聚焦一个人的心理历程（如《司马迁：那一刀之后》）
+
+**形态三：回顾式旁白**
+
+在文章末尾（或事件结束后），插入一段当事人在事后回望时的内心独白。让读者看到「他自己后来怎么看待自己当年的选择」。
+
+适用场景：
+- 人物晚年对关键事件的反思
+- 人物失败/死亡前的最后一刻
+- 「如果重来一次」式的反事实内省
+
+---
+
+**旁白的写法纪律：**
+
+**① 写「不知道」——不做事后诸葛亮。**
+
+人物当时不知道结果。旁白必须还原那种在迷雾中做选择的真实感。
+> ✅ 「他不知道潼关外面有什么。但他知道不出关的后果——圣旨上写得清清楚楚：抗旨，族诛。」
+> ❌ 「他出关了，这一决定导致了唐朝的崩溃。」（这是历史评价，不是旁白）
+
+**② 写具体感官——不写抽象情绪。**
+
+用身体反应写内心活动。
+> ✅ 「他的手在抖。不是冷，是那道诏书在他手里攥了太久。」
+> ❌ 「他非常焦虑。」
+
+**③ 写两难——不写伟光正。**
+
+人物不是在「正确」和「错误」之间选，是在两个都不好的选项中挣扎。
+> ✅ 「出关，二十万人可能全死在他手上。不出关，他全家死在他眼前。」
+> ❌ 「他勇敢地选择了出关迎战。」
+
+**④ 基于史料推测——不凭空编造。**
+
+旁白是推测，但必须有史料锚点。你知道他做了什么选择，可以合理推测他为什么这样选——推测要符合这个人物的性格逻辑和历史处境。
+> 史料：哥舒翰最终选择了出关。
+> 合理推测：「他知道这是错的。但三道诏书——每一道都在说同一句话：朕不相信你。」
+
+**⑤ 不做道德判断。**
+
+旁白呈现人物的内在逻辑，不替读者做对错判断。
+> ✅ 「在他看来，这是他唯一能走的路。」
+> ❌ 「他选错了。这是一个愚蠢的决定。」
+
+---
+
+**旁白的格式规范：**
+
+**文章内（Markdown）格式**——用特殊块标记：
+
+```
+::: narration
+他的手在抖。不是冷，是那道诏书攥在手里太久了。
+出关——二十万条命。不出关——全家三百口人，一个都活不了。
+他选了出关。
+
+——哥舒翰，756年六月，潼关城头
+:::
+```
+
+平台适配：
+- **公众号/B站/知乎**：使用 `::: narration` 或 `> 【内心旁白】` 格式
+- **微博/头条**：简化为「【旁白】」或直接穿插在叙事中，如「他心想：……」
+- **小红书**：用 emoji 标记「💭 他当时脑子里想的是……」
+
+**Docx 格式**——独立样式：
+
+| 元素 | 字体 | 字号 | 样式 | 颜色 | 对齐 | 缩进 | 间距 |
+|------|------|------|------|------|------|------|------|
+| 旁白正文 | 微软雅黑 | 10pt | 斜体 | #6A5ACD | 两端对齐 | 左右各缩进 48pt | 段前/后各 10pt |
+| 旁白标签 | 微软雅黑 | 9pt | 加粗 | #6A5ACD | 右对齐 | 同旁白 | 段后 4pt |
+
+---
+
+**旁白启用决策流程：**
+
+```
+用户请求中包含「视角」「心理」「怎么想的」「为什么这样做」
+  │
+  ├── 是 → 主动开启旁白模式，询问用户偏好形态
+  │        「这篇文章很适合加入旁白。你倾向于：
+  │         A. 在1-3个关键时刻插入内心旁白 [默认]
+  │         B. 全文贯穿式——从头到尾跟着XX的内心走
+  │         C. 只在结尾加一段回顾式旁白」
+  │
+  └── 否 → 但事件有强烈的两难抉择或人物心理谜团
+            → 温和建议：「要不要加一段内心旁白？会让读者更理解他为什么这样做。」
+```
+
+**旁白在各平台上的特殊处理：**
+
+| 平台 | 旁白策略 | 格式 |
+|------|---------|------|
+| 公众号 | 默认 1-3 处关键时刻旁白，独立样式 | `::: narration` 或独立缩进段落 |
+| 知乎 | 旁白偏克制——知乎重逻辑，旁白服务于论证 | 以「他当时的心理状态不难推测：……」引入 |
+| B站 | 旁白可以更夸张、更戏剧化 | 「你猜他当时脑子里在想什么？——」 |
+| 头条 | 旁白极短（1-2句），与正文紧贴 | 不独立成段，用「——他想」收束 |
+| 微博 | 旁白融入金句，不做独立格式 | 「他心里清楚：……」 |
+| 小红书 | 旁白用 emoji + 第一人称 | 「💭 他当时的OS：……」 |
+| 百度 | 不推荐使用旁白——百度偏好客观权威 | 如需，用「据史料推测，他当时的心理……」 |
+
+---
+
+### 3.9 图文模式（可选）——用图片生成词代替图片描述
+
+**图文模式是什么？**
+
+图文模式是一种可选的增强功能。你不在文章中直接插入图片——而是在文章中标记出最佳配图位置，并附上**可直接用于 AI 图片生成工具的图片生成词**。用户拿到这些生成词后，可以一键生成对应的历史插图。
+
+这不是「给文章配图」。这是**让用户自己生成属于这篇文章的专属视觉画面**。
+
+**何时主动建议用户启用图文模式？**
+
+| 信号 | 示例 |
+|------|------|
+| 用户说「配图」「图文」「加图片」 | 「给破釜沉舟的文章加几张图」 |
+| 事件有极强的视觉场景 | 战争场面、宫廷政变、地理奇观、建筑群像 |
+| 用户指定了 B站/小红书/头条等图片友好平台 | 这些平台天然需要封面图和内文配图 |
+| 文章超过 2500 字 | 长文需要视觉呼吸点 |
+
+> 如果用户未明确要求图文模式，但你判断事件视觉性强（如战争、登基、刺杀场景），可以在阶段一末尾温和建议：「这篇文章的场面感很强，要不要开启图文模式？我会在关键场景处插入图片生成词，你可以直接拿去生成配图。」
+
+**图片生成词的插入规则：**
+
+| 规则 | 说明 |
+|------|------|
+| **插入频率** | 每 400-700 字插入一处（一篇文章 3-6 处） |
+| **插入位置** | 段落之间、场景切换处、高潮描写之后 |
+| **不插入位置** | 纯分析段落中间、小标题紧后面、结尾最后 200 字内 |
+| **必插位置** | ① 开头场景 ② 文章最高潮处 ③ 文中唯一提到的重要物件/地点 |
+
+**图片生成词的格式规范：**
+
+**文章内（Markdown）格式**：
+
+```
+::: image-prompt [图1/5]
+**场景位置**：开场第一段之后
+**画面描述**：公元前207年冬天，漳河岸边，年轻的项羽面向对岸，身后士兵正在凿沉渡船、砸碎炊具。河水冰冷，天色阴沉，雾气弥漫。
+**图片生成词**：
+Ancient Chinese battlefield winter 207 BC, a 24-year-old general in bronze battle-worn armor standing on riverbank at dawn, behind him soldiers smashing cooking vessels and sinking wooden boats into the icy river, misty atmosphere, distant Qin army encampment on opposite shore, epic historical film cinematography, dramatic lighting, ultra-detailed, 8K --ar 16:9 --style raw
+:::
+```
+
+**图片生成词的写法纪律：**
+
+**① 英文为主，专有名词保留中文拼音。**
+AI 图片生成工具对英文 prompt 的理解远优于中文。但地名、人名用拼音增强准确性。
+> ✅ 「Zhang River (漳河), General Xiang Yu, Qin Dynasty armor style」
+> ❌ 全中文 prompt
+
+**② 写明时代、地点、人物、动作、氛围五个要素。**
+不写「一幅历史场景」——写「公元前207年冬天，漳河岸边，24岁年轻将领，面向对岸敌军，身后士兵沉船，雾气弥漫的清晨」。
+> ✅ 「winter 207 BC, Zhang River bank, young general facing enemy camp, soldiers sinking boats behind him, misty dawn」
+> ❌ 「ancient Chinese battle scene」
+
+**③ 指定视觉风格和画幅。**
+历史文章推荐风格：
+- **电影写实风**（最推荐）：`cinematic historical film style, photorealistic, epic lighting, 8K`
+- **中国水墨风**（适合古典叙事）：`Chinese ink wash painting style, Song Dynasty landscape aesthetic, subtle colors`
+- **数字概念艺术**（适合宏大场景）：`digital concept art, grand scale, dramatic composition, detailed textures`
+
+画幅参数：
+- 封面/头图：`--ar 16:9`
+- 内文插图：`--ar 3:2` 或 `--ar 4:3`
+- 纵向场景：`--ar 2:3`
+
+**④ 写客观描述，不写情绪判断。**
+AI 不理解「悲壮」「伟大」「令人震撼」。写具体的视觉元素让 AI 自己去呈现那些情绪。
+> ✅ 「broken banners on the ground, soldier kneeling in mud, rain falling, grey sky」
+> ❌ 「a tragic and heroic scene of defeat」
+
+**⑤ 每处生成词控制在 50-120 个英文单词。**
+太短缺乏细节，AI 自由发挥空间太大。太长会稀释关键词权重。
+
+**⑥ 注意历史准确性。**
+不要出现穿越物品。秦朝没有马镫（马镫是魏晋才普及的）。秦汉甲胄以皮甲和札甲为主，非后来的鳞甲。旗帜材质是麻布非丝绸（丝绸是高级将领才有的）。
+> ✅ 「Qin Dynasty lamellar armor, bronze weapons, hemp banners, no stirrups on horses」
+> ❌ 「knights in shining armor with silk flags」
+
+---
+
+**图片生成词在各平台上的处理：**
+
+| 平台 | 处理方式 |
+|------|---------|
+| **公众号** | 生成词保留在文章末尾的「配图指南」附录中，正文仅用 `[图N]` 标记位置 |
+| **B站** | 生成词可直接放在正文的 `::: image-prompt` 块中，B站用户习惯"边看边生成" |
+| **知乎** | 生成词保留在文末附录，知乎重文字轻图片 |
+| **小红书** | 生成词简化（30-50词），突出视觉关键词，搭配 emoji |
+| **头条/微博** | 只标记位置不附生成词——这些平台用户不会去生成图片 |
+| **百度** | 不推荐图文模式 |
+
+**图文模式在正文中的位置标记：**
+
+公众号/知乎版正文内仅出现简洁的标记：
+> `[图1/5 · 位置标记：漳河岸边，项羽下令沉船]`
+
+Docx 文档中，图片生成词以独立灰色背景框呈现，置于对应段落之后。
+
+**Docx 格式**——独立样式：
+
+| 元素 | 字体 | 字号 | 样式 | 颜色 | 背景色 | 对齐 | 缩进 |
+|------|------|------|------|------|--------|------|------|
+| 图片生成词框 | 微软雅黑 + Consolas(英文) | 9pt | 标签加粗/正文常规 | #444444 | #F5F0EB | 左对齐 | 左右各缩进 36pt |
+
+框内结构：
+```
+┌─────────────────────────────────────────┐
+│ 【配图指南 · 图N/共M张】                   │
+│ 位置：第X部分，约XXX字处                   │
+│ 画面：中文场景描述                         │
+│ ─────────────────────────────────────── │
+│ 图片生成词：                              │
+│ [英文 prompt，Consolas 字体]              │
+│ 推荐风格：电影写实 / 水墨 / 概念艺术        │
+│ 推荐画幅：16:9 / 3:2 / 4:3               │
+└─────────────────────────────────────────┘
+```
+
+---
+
 ## 阶段四：下笔成文——从第一个字到最后一个句号
 
 **注意：以下 4.1-4.5 中的所有策略都需要根据目标平台进行调校。** 每个小节末尾的「平台调校速查」是必读项——它告诉你同一策略在不同平台上怎么落地。
@@ -1053,6 +1317,8 @@ model: opus
 | 加粗策略 | 每段首句或核心判断句加粗，方便扫读。光看加粗句应该能连出全文的论点线 |
 | 小标题层级 | 最多两级，避免三层嵌套 |
 | 引用块（>） | 用于金句、当事人原话、关键判断。一篇文章 3-6 个引用块为宜 |
+| 旁白块（::: narration） | 用于人物内心旁白（可选功能），紫色斜体缩进，独立于正文。一篇文章 1-3 处为宜 |
+| 图片生成词（::: image-prompt） | 用于图文模式（可选功能），灰色背景框，含场景描述和英文 AI 生成 prompt。一篇文章 3-6 处为宜 |
 | 分隔线（---） | 大段落之间分隔，给读者视觉呼吸点 |
 | 配图建议 | 每 300-500 字配一张相关图片，带图版本的完读率比纯文字版高出约 35% |
 
@@ -1102,6 +1368,9 @@ model: opus
 | 正文内加粗 | 微软雅黑 | 11pt | 加粗 | #1A1A1A | 两端对齐 | 同正文（`**文字**` 自动转换） | 段后6pt |
 | 金句/引用块 | 微软雅黑 | 12pt | 加粗 | #8B4513 | 左对齐 | 左右各缩进 36pt | 段前12pt 段后12pt；行距22pt |
 | 当事人原话 | 微软雅黑 | 11pt | 斜体+加粗 | #555555 | 居中 | 左右各缩进 48pt | 段前8pt 段后8pt |
+| 内心旁白 | 微软雅黑 | 10pt | 斜体 | #6A5ACD | 两端对齐 | 左右各缩进 48pt | 段前/后各 10pt |
+| 旁白标签 | 微软雅黑 | 9pt | 加粗 | #6A5ACD | 右对齐 | 同旁白 | 段后4pt |
+| 图片生成词框 | 微软雅黑 + Consolas | 9pt | 标签加粗 | #444444 | 左对齐 | 左右各缩进 36pt | 背景色 #F5F0EB；段前/后各 8pt |
 | 参考来源 | 微软雅黑 | 9pt | — | #888888 | 左对齐 | **悬挂缩进 24pt** | 段后2pt |
 | 页眉 | 微软雅黑 | 9pt | — | #999999 | 居中 | 无 | 底部 0.5pt 浅灰下划线 |
 | 页脚 | 微软雅黑 | 9pt | — | #999999 | 居中 | 无 | "— 页码 —" 格式 |
@@ -1276,6 +1545,72 @@ def add_original_words(text):
     run = p.add_run(text)
     run.font.name = '微软雅黑'; run.font.size = Pt(11); run.font.bold = True; run.font.italic = True
     run.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+
+def add_narration(text, character=""):
+    """内心旁白：紫色斜体、更宽缩进。character 为人物名，用于标签行"""
+    # 旁白标签
+    if character:
+        p_label = doc.add_paragraph()
+        p_label.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        p_label.paragraph_format.space_after = Pt(4)
+        p_label.paragraph_format.left_indent = Cm(1.69)
+        p_label.paragraph_format.right_indent = Cm(1.69)
+        run_label = p_label.add_run(f'【内心旁白 · {character}】')
+        run_label.font.name = '微软雅黑'; run_label.font.size = Pt(9); run_label.font.bold = True
+        run_label.font.color.rgb = RGBColor(0x6A, 0x5A, 0xCD)
+    # 旁白正文
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    p.paragraph_format.space_before = Pt(10)
+    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.left_indent = Cm(1.69)
+    p.paragraph_format.right_indent = Cm(1.69)
+    run = p.add_run(text)
+    run.font.name = '微软雅黑'; run.font.size = Pt(10); run.font.italic = True
+    run.font.color.rgb = RGBColor(0x6A, 0x5A, 0xCD)
+
+def add_image_prompt(num, total, position, scene_cn, prompt_en, style="cinematic", aspect="16:9"):
+    """图片生成词框：灰色背景、含中文场景描述和英文生成 prompt"""
+    from docx.oxml import OxmlElement
+    # 构建框内文本
+    label = f'【配图指南 · 图{num}/{total}】'
+    pos_line = f'位置：{position}'
+    scene_line = f'画面：{scene_cn}'
+    style_map = {"cinematic": "电影写实风", "ink": "中国水墨风", "concept": "数字概念艺术"}
+    style_cn = style_map.get(style, style)
+    # 框体容器段落
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    p.paragraph_format.space_before = Pt(8)
+    p.paragraph_format.space_after = Pt(8)
+    p.paragraph_format.left_indent = Cm(1.27)
+    p.paragraph_format.right_indent = Cm(1.27)
+    # 灰色背景（通过 shading）
+    pPr = p._p.get_or_add_pPr()
+    shd = OxmlElement('w:shd')
+    shd.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}fill', 'F5F0EB')
+    shd.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val', 'clear')
+    pPr.append(shd)
+    # 标签行（加粗）
+    run_label = p.add_run(label + '\n')
+    run_label.font.name = '微软雅黑'; run_label.font.size = Pt(9); run_label.font.bold = True
+    run_label.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+    # 位置 + 描述（中文，常规）
+    run_info = p.add_run(pos_line + '\n' + scene_line + '\n')
+    run_info.font.name = '微软雅黑'; run_info.font.size = Pt(9)
+    run_info.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    # 分隔
+    run_sep = p.add_run('─── 图片生成词 ───\n')
+    run_sep.font.name = '微软雅黑'; run_sep.font.size = Pt(8)
+    run_sep.font.color.rgb = RGBColor(0x99, 0x99, 0x99)
+    # 英文 prompt（Consolas 字体）
+    run_en = p.add_run(prompt_en + '\n')
+    run_en.font.name = 'Consolas'; run_en.font.size = Pt(9)
+    run_en.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
+    # 风格 + 画幅
+    run_meta = p.add_run(f'推荐风格：{style_cn}  |  推荐画幅：{aspect}')
+    run_meta.font.name = '微软雅黑'; run_meta.font.size = Pt(8)
+    run_meta.font.color.rgb = RGBColor(0x99, 0x99, 0x99)
 
 def add_ref(text):
     """参考来源：悬挂缩进"""
@@ -1477,6 +1812,42 @@ function Add-OriginalWords($text) {
     $sel.TypeText($text); $sel.TypeParagraph()
 }
 
+function Add-Narration($text, $character) {
+    # 旁白标签
+    if ($character) {
+        $sel = $word.Selection; $sel.EndKey(6)
+        $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 9; $sel.Font.Bold = $true
+        $sel.Font.Color = 0x6A5ACD
+        $sel.ParagraphFormat.Alignment = 2
+        $sel.ParagraphFormat.SpaceAfter = 4
+        $sel.ParagraphFormat.LeftIndent = 48; $sel.ParagraphFormat.RightIndent = 48
+        $sel.TypeText("【内心旁白 · $character】"); $sel.TypeParagraph()
+    }
+    # 旁白正文
+    $sel = $word.Selection; $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 10; $sel.Font.Italic = $true; $sel.Font.Bold = $false
+    $sel.Font.Color = 0x6A5ACD
+    $sel.ParagraphFormat.Alignment = 3
+    $sel.ParagraphFormat.SpaceBefore = 10; $sel.ParagraphFormat.SpaceAfter = 10
+    $sel.ParagraphFormat.LeftIndent = 48; $sel.ParagraphFormat.RightIndent = 48
+    $sel.TypeText($text); $sel.TypeParagraph()
+}
+
+function Add-ImagePrompt($num, $total, $position, $scene_cn, $prompt_en, $style, $aspect) {
+    $styleMap = @{cinematic="电影写实风"; ink="中国水墨风"; concept="数字概念艺术"}
+    $styleCN = if ($styleMap.ContainsKey($style)) { $styleMap[$style] } else { $style }
+    # 构建完整文本
+    $label = "【配图指南 · 图$num/$total】"
+    $fullText = "$label`r`n位置：$position`r`n画面：$scene_cn`r`n─── 图片生成词 ───`r`n$prompt_en`r`n推荐风格：$styleCN  |  推荐画幅：$aspect"
+    $sel = $word.Selection; $sel.EndKey(6)
+    $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 9; $sel.Font.Bold = $false
+    $sel.Font.Color = 0x444444
+    $sel.ParagraphFormat.Alignment = 0
+    $sel.ParagraphFormat.SpaceBefore = 8; $sel.ParagraphFormat.SpaceAfter = 8
+    $sel.ParagraphFormat.LeftIndent = 36; $sel.ParagraphFormat.RightIndent = 36
+    $sel.TypeText($fullText); $sel.TypeParagraph()
+}
+
 function Add-Ref($text) {
     $sel = $word.Selection; $sel.EndKey(6)
     $sel.Font.Name = "微软雅黑"; $sel.Font.Size = 9; $sel.Font.Bold = $false
@@ -1658,6 +2029,12 @@ try {
     - 结尾：符合目标平台的结尾偏好吗？让人想转发/收藏/评论吗？
     - 节奏：读起来有呼吸感吗？有没有超过500字没有新悬念/新反转的段落？
     - **文档已保存？**：确认 .docx 文件已导出，文件名含平台标识。
+    - **旁白已启用？**：如果用户请求了旁白模式——旁白是否放在了正确的决策点？是否遵守了「写不知道/写感官/写两难」纪律？格式是否正确？
+    - **图文已启用？**：如果用户请求了图文模式——图片生成词是否插在了正确的位置？是否遵守了「五要素」「英文为主」「历史准确」纪律？数量是否在 3-6 处范围内？
+
+20. **旁白的底线——推测而不编造，揭示而不审判。** 旁白是「基于史料的合理推测」而非「小说式的自由创作」。每一次切入人物内心，都应当有外在行为、历史记载或性格逻辑作为锚点。旁白的目的不是替人物辩护或定罪，而是让读者理解「他为什么在那个时刻那样选择」——理解之后，判断交给读者。
+
+21. **图片生成词的历史准确性——画面可以想象，细节不能穿越。** 图片生成词中的服饰、武器、建筑、器物必须符合所述时代。秦朝没有马镫，汉代没有椅子，唐代没有折扇——这些细节错误会让 AI 生成一张"古装剧"式的假历史图片而非真正的历史插图。如果不确定某个细节是否正确，写泛一些（"bronze age weapons"）比写错了好。
 
 ---
 
@@ -1843,3 +2220,4 @@ try {
 - 如果用户未指定体例和平台，根据事件特征从体例匹配矩阵和平台匹配矩阵中选择最合适的组合，并在文末注明。
 - 推荐字数：公众号 2000-4000，知乎 2000-5000，B站 1200-2500，头条 800-1800，微博 500-1200，小红书 800-1500，百度 1500-3000。特别复杂的事件可适当延长。
 - 如果用户请求的不是具体事件而是主题/时期，先帮用户缩小范围（参考开头的速览格式）。
+- **旁白模式**：当用户请求中包含「视角」「心理」「怎么想的」「为什么这样做」关键词，或事件天然有强烈的两难抉择时，主动询问用户是否启用旁白。旁白必须基于史料推测，严禁凭空编造内心活动。三种形态（关键时刻/贯穿式/回顾式）中，默认为关键时刻旁白。
